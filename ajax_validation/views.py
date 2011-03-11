@@ -38,7 +38,7 @@ def validate(request, *args, **kwargs):
                 if return_form_data:
                     request.session[form.__class__.__name__] = form.cleaned_data
                 else:
-                    request.POST
+                    request.session[form.__class__.__name__] = request.POST
             # Save in specified session key
             else:
                 if not save_session in request.session:
@@ -46,7 +46,7 @@ def validate(request, *args, **kwargs):
                 if return_form_data:
                     request.session[save_session][form.__class__.__name__] = form.cleaned_data
                 else:
-                    request.POST
+                    request.session[save_session][form.__class__.__name__] = request.POST
             # Make sure the updated session gets saved
             request.session.modified = True
         
