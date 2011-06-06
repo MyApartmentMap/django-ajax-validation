@@ -2,6 +2,7 @@ from django import forms
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.forms.formsets import BaseFormSet
+from django.utils.translation import force_unicode
 
 from ajax_validation.utils import LazyEncoder
 
@@ -55,7 +56,13 @@ def validate(request, *args, **kwargs):
         }
         
         if return_form_data:
-            data['form'] = form.cleaned_data
+            if not isinstance(form, BaseFormSet):
+                formfields = {}
+                for fieldname in form.fields.keys():
+                    formfields[fieldname] = force_unicode(form.cleaned_data[fieldname])
+                data['form'] = formfields
+            else:
+                data['form'] = form.cleaned_data
     else:
         # if we're dealing with a FormSet then walk over .forms to populate errors and formfields
         if isinstance(form, BaseFormSet):
